@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="search">
+	<sql id="query_body">
+			FROM carpoolList c 
+			JOIN users u ON c.driverid = u.nickname
+			<trim prefix="WHERE" prefixOverrides="AND">
+				<if test="default_time != null">
+				<![CDATA[
+				   AND c.dateTime >= #{time} + 0 AND c.dateTime <= #{time} + 86309
+				]]>
+				</if>
+				<if test="before_six_am != null">
+				<![CDATA[
+					AND (c.dateTime >= #{time} + 0 AND c.dateTime <= #{time} +21600)
+				]]>
+				</if>
+				<if test="six_to_noon != null">
+				<![CDATA[
+					AND (c.dateTime >= #{time} + 21601 AND c.datetime <= #{time} + 43200)
+				]]>
+				</if>	
+				<if test="noon_to_six != null">
+				<![CDATA[
+					AND (dateTime >= #{time} + 43201 AND datetime <= #{time} +64800)
+				]]>
+				</if>	
+				<if test="after_six != null">
+				<![CDATA[
+					AND (dateTime >= #{time} + 64801 AND datetime < #{time} + 86400)
+				]]>
+				</if>	
+				<if test="carModel1 != null">
+				<![CDATA[
+					AND (carModel = 1)
+				]]>
+				</if>	
+				<if test="carModel2 != null">
+				<![CDATA[
+					AND (carModel = 2)
+				]]>
+				</if>	
+				<if test="carModel3 != null">
+				<![CDATA[
+					AND (carModel = 3)
+				]]>	
+				</if>	
+				<if test="twenties != null">
+				<![CDATA[
+					AND (extract(year from sysdate) - extract(year from birth)) > 19 AND (extract(year from sysdate) - extract(year from birth)) < 30
+				]]>
+				</if>
+				<if test="thirties != null">
+				<![CDATA[
+					AND (extract(year from sysdate) - extract(year from birth)) > 29 AND (extract(year from sysdate) - extract(year from birth)) < 40
+				]]>
+				</if>
+				<if test="forties != null">
+				<![CDATA[
+					AND (extract(year from sysdate) - extract(year from birth)) > 39 AND (extract(year from sysdate) - extract(year from birth)) < 50
+				]]>
+				</if>
+				<if test="fifties != null">
+				<![CDATA[
+					AND (extract(year from sysdate) - extract(year from birth)) > 49 AND (extract(year from sysdate) - extract(year from birth)) < 60
+				]]>
+				</if>
+				<if test="sixties != null">
+				<![CDATA[
+					AND (extract(year from sysdate) - extract(year from birth)) > 59 AND (extract(year from sysdate) - extract(year from birth)) < 70
+				]]>
+				</if>
+				<if test="seventies != null">
+				<![CDATA[
+					AND (extract(year from sysdate) - extract(year from birth)) > 69 AND (extract(year from sysdate) - extract(year from birth)) < 80
+				]]>
+				</if>
+				<if test="female != null">
+				<![CDATA[
+					AND gender = 'female'
+				]]>
+				</if>
+				<if test="male != null">
+				<![CDATA[
+					AND gender = 'male'
+				]]>
+				</if>
+				<if test="seat1 != null">
+				<![CDATA[
+					AND maxPassenger >= 1
+				]]>
+				</if>
+				<if test="seat2 != null">
+				<![CDATA[
+					AND maxPassenger >= 2
+				]]>
+				</if>
+				<if test="seat3 != null">
+				<![CDATA[
+					AND maxPassenger >= 3
+				]]>
+				</if>
+				<if test="seat4 != null">
+				<![CDATA[
+					AND maxPassenger >= 4
+				]]>	
+				</if>
+				<if test="seat5 != null">
+				<![CDATA[
+					AND maxPassenger >= 5
+				]]>	
+				</if>		
+			</trim>
+			<![CDATA[
+				AND (depart_lat >= #{depart_sw_bound_lat} AND depart_lat <= #{depart_ne_bound_lat}
+				AND depart_lon >= #{depart_sw_bound_lon} AND depart_lon <= #{depart_ne_bound_lon}
+				AND destination_lat >= #{destination_sw_bound_lat} AND destination_lat <=  #{destination_ne_bound_lat}
+				AND destination_lon >= #{destination_sw_bound_lon} AND destination_lon <= #{destination_ne_bound_lon})
+				AND time >= TO_CHAR(SYSDATE,'YYYY-MM-DD HH:mm')
+				ORDER BY ${orderby_column} ${orderby_sort}
+			]]>
+	</sql>
+	<select id="count" parameterType="hashmap" resultType="int">
+		select count(c.CARPOOLNUM)
+		FROM carpoolList c 
+		JOIN users u ON c.driverid = u.nickname
+			<trim prefix="WHERE" prefixOverrides="AND">
+				<if test="default_time != null">
+				<![CDATA[
+				   AND c.dateTime >= #{time} + 0 AND c.dateTime <= #{time} + 86309
+				]]>
+				</if>
+				<if test="before_six_am != null">
+				<![CDATA[
+					AND (c.dateTime >= #{time} + 0 AND c.dateTime <= #{time} +21600)
+				]]>
+				</if>
+				<if test="six_to_noon != null">
+				<![CDATA[
+					AND (c.dateTime >= #{time} + 21601 AND c.datetime <= #{time} + 43200)
+				]]>
+				</if>	
+				<if test="noon_to_six != null">
+				<![CDATA[
+					AND (dateTime >= #{time} + 43201 AND datetime <= #{time} +64800)
+				]]>
+				</if>	
+				<if test="after_six != null">
+				<![CDATA[
+					AND (dateTime >= #{time} + 64801 AND datetime < #{time} + 86400)
+				]]>
+				</if>	
+				<if test="carModel1 != null">
+				<![CDATA[
+					AND (carModel = 1)
+				]]>
+				</if>	
+				<if test="carModel2 != null">
+				<![CDATA[
+					AND (carModel = 2)
+				]]>
+				</if>	
+				<if test="carModel3 != null">
+				<![CDATA[
+					AND (carModel = 3)
+				]]>	
+				</if>	
+				<if test="twenties != null">
+				<![CDATA[
+					AND (extract(year from sysdate) - extract(year from birth)) > 19 AND (extract(year from sysdate) - extract(year from birth)) < 30
+				]]>
+				</if>
+				<if test="thirties != null">
+				<![CDATA[
+					AND (extract(year from sysdate) - extract(year from birth)) > 29 AND (extract(year from sysdate) - extract(year from birth)) < 40
+				]]>
+				</if>
+				<if test="forties != null">
+				<![CDATA[
+					AND (extract(year from sysdate) - extract(year from birth)) > 39 AND (extract(year from sysdate) - extract(year from birth)) < 50
+				]]>
+				</if>
+				<if test="fifties != null">
+				<![CDATA[
+					AND (extract(year from sysdate) - extract(year from birth)) > 49 AND (extract(year from sysdate) - extract(year from birth)) < 60
+				]]>
+				</if>
+				<if test="sixties != null">
+				<![CDATA[
+					AND (extract(year from sysdate) - extract(year from birth)) > 59 AND (extract(year from sysdate) - extract(year from birth)) < 70
+				]]>
+				</if>
+				<if test="seventies != null">
+				<![CDATA[
+					AND (extract(year from sysdate) - extract(year from birth)) > 69 AND (extract(year from sysdate) - extract(year from birth)) < 80
+				]]>
+				</if>
+				<if test="female != null">
+				<![CDATA[
+					AND gender = '여'
+				]]>
+				</if>
+				<if test="male != null">
+				<![CDATA[
+					AND gender = '남'
+				]]>
+				</if>
+				<if test="seat1 != null">
+				<![CDATA[
+					AND maxPassenger >= 1
+				]]>
+				</if>
+				<if test="seat2 != null">
+				<![CDATA[
+					AND maxPassenger >= 2
+				]]>
+				</if>
+				<if test="seat3 != null">
+				<![CDATA[
+					AND maxPassenger >= 3
+				]]>
+				</if>
+				<if test="seat4 != null">
+				<![CDATA[
+					AND maxPassenger >= 4
+				]]>	
+				</if>
+				<if test="seat5 != null">
+				<![CDATA[
+					AND maxPassenger >= 5
+				]]>	
+				</if>		
+			</trim>
+			<![CDATA[
+				AND (depart_lat >= #{depart_sw_bound_lat} AND depart_lat <= #{depart_ne_bound_lat}
+				AND depart_lon >= #{depart_sw_bound_lon} AND depart_lon <= #{depart_ne_bound_lon}
+				AND destination_lat >= #{destination_sw_bound_lat} AND destination_lat <=  #{destination_ne_bound_lat}
+				AND destination_lon >= #{destination_sw_bound_lon} AND destination_lon <= #{destination_ne_bound_lon})
+				AND time >= TO_CHAR(SYSDATE,'YYYY-MM-DD HH:mm') 
+				ORDER BY ${sel} ${sort}
+			]]>
+	</select>
+	
+	<select id="list" parameterType="hashmap" resultType="carpoolDTO">
+		select B.*, r from
+			(select A.*, rownum r from
+				(select c.* 
+					FROM carpoolList c 
+					JOIN users u ON c.driverid = u.nickname
+					<trim prefix="WHERE" prefixOverrides="AND">
+						<if test="default_time != null">
+						<![CDATA[
+						   AND c.dateTime >= #{time} + 0 AND c.dateTime <= #{time} + 86309
+						]]>
+						</if>
+						<if test="before_six_am != null">
+						<![CDATA[
+							AND (c.dateTime >= #{time} + 0 AND c.dateTime <= #{time} +21600)
+						]]>
+						</if>
+						<if test="six_to_noon != null">
+						<![CDATA[
+							AND (c.dateTime >= #{time} + 21601 AND c.datetime <= #{time} + 43200)
+						]]>
+						</if>	
+						<if test="noon_to_six != null">
+						<![CDATA[
+							AND (dateTime >= #{time} + 43201 AND datetime <= #{time} +64800)
+						]]>
+						</if>	
+						<if test="after_six != null">
+						<![CDATA[
+							AND (dateTime >= #{time} + 64801 AND datetime < #{time} + 86400)
+						]]>
+						</if>	
+						<if test="carModel1 != null">
+						<![CDATA[
+							AND (carModel = 1)
+						]]>
+						</if>	
+						<if test="carModel2 != null">
+						<![CDATA[
+							AND (carModel = 2)
+						]]>
+						</if>	
+						<if test="carModel3 != null">
+						<![CDATA[
+							AND (carModel = 3)
+						]]>	
+						</if>	
+						<if test="twenties != null">
+						<![CDATA[
+							AND (extract(year from sysdate) - extract(year from birth)) > 19 AND (extract(year from sysdate) - extract(year from birth)) < 30
+						]]>
+						</if>
+						<if test="thirties != null">
+						<![CDATA[
+							AND (extract(year from sysdate) - extract(year from birth)) > 29 AND (extract(year from sysdate) - extract(year from birth)) < 40
+						]]>
+						</if>
+						<if test="forties != null">
+						<![CDATA[
+							AND (extract(year from sysdate) - extract(year from birth)) > 39 AND (extract(year from sysdate) - extract(year from birth)) < 50
+						]]>
+						</if>
+						<if test="fifties != null">
+						<![CDATA[
+							AND (extract(year from sysdate) - extract(year from birth)) > 49 AND (extract(year from sysdate) - extract(year from birth)) < 60
+						]]>
+						</if>
+						<if test="sixties != null">
+						<![CDATA[
+							AND (extract(year from sysdate) - extract(year from birth)) > 59 AND (extract(year from sysdate) - extract(year from birth)) < 70
+						]]>
+						</if>
+						<if test="seventies != null">
+						<![CDATA[
+							AND (extract(year from sysdate) - extract(year from birth)) > 69 AND (extract(year from sysdate) - extract(year from birth)) < 80
+						]]>
+						</if>
+						<if test="female != null">
+						<![CDATA[
+							AND gender = '여'
+						]]>
+						</if>
+						<if test="male != null">
+						<![CDATA[
+							AND gender = '남'
+						]]>
+						</if>
+						<if test="seat1 != null">
+						<![CDATA[
+							AND maxPassenger >= 1
+						]]>
+						</if>
+						<if test="seat2 != null">
+						<![CDATA[
+							AND maxPassenger >= 2
+						]]>
+						</if>
+						<if test="seat3 != null">
+						<![CDATA[
+							AND maxPassenger >= 3
+						]]>
+						</if>
+						<if test="seat4 != null">
+						<![CDATA[
+							AND maxPassenger >= 4
+						]]>	
+						</if>
+						<if test="seat5 != null">
+						<![CDATA[
+							AND maxPassenger >= 5
+						]]>	
+						</if>		
+					</trim>
+					<![CDATA[
+						AND (depart_lat >= #{depart_sw_bound_lat} AND depart_lat <= #{depart_ne_bound_lat}
+						AND depart_lon >= #{depart_sw_bound_lon} AND depart_lon <= #{depart_ne_bound_lon}
+						AND destination_lat >= #{destination_sw_bound_lat} AND destination_lat <=  #{destination_ne_bound_lat}
+						AND destination_lon >= #{destination_sw_bound_lon} AND destination_lon <= #{destination_ne_bound_lon})
+						AND time >= TO_CHAR(SYSDATE,'YYYY-MM-DD HH:mm') ORDER BY ${sel} ${sort}) A
+						ORDER BY ${sel} ${sort}) B
+						WHERE r >= #{start} and r <= #{end}
+					]]>
+	</select>
+</mapper>
+
+<!--  컨트롤러에서 parameter받아올때도 Hashmap형식으로 받앙와야겠네
+deoart, "어디어디" / destination "어디어디" 이런식 ? 오이 씨 머리 아파요ㅠㅠ 
+그 다음건 다음에..생각..하..자...-->

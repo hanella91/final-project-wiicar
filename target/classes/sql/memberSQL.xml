@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+	
+	<!-- 처음 로그인하는 회원인지 확인 -->
+	<select id="checkUserId" parameterType="memberDTO" resultType="int">
+		select count(*) from users where id=#{id}
+	</select>
+
+	<!-- 비밀번호 확인 -->
+	<select id="checkUserPw" parameterType="memberDTO" resultType="int">
+		select count(*) from users where nickname=#{nickname} and pw=#{pw}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="insertUser" parameterType="memberDTO">
+		insert into users(id, pw, nickname, name, birth, phone, gender
+		<trim prefix="," suffixOverrides=",">
+			<if test="profileImage != null"> profileImage,</if>
+			<if test="preference != null"> preference,</if>
+			<if test="licenseImage != null"> licenseImage,</if>
+			<if test="bankNo != null"> bankNo,</if>
+			<if test="carModel != null"> carModel</if>
+		</trim>
+		) values(#{id}, #{pw}, #{nickname}, #{name}, #{birth}, #{phone}, #{gender}
+		<trim prefix="," suffixOverrides=",">
+			<if test="profileImage != null"> #{profileImage},</if>
+			<if test="preference != null"> #{preference},</if>
+			<if test="licenseImage != null"> #{licenseImage},</if>
+			<if test="bankNo != null"> #{bankNo},</if>
+			<if test="carModel != null"> #{carModel}</if>
+		</trim>
+		)
+	</insert>
+	
+	<!-- 회원 1명 정보 가져오기 -->
+	<select id="getMemberInfo" parameterType="string" resultType="memberDTO">
+		select * from users where nickname = #{value}
+	</select>
+
+	<!-- 회원 정보 수정 -->
+	<update id="updateMemberInfo" parameterType="memberDTO">
+		update users set
+		<trim suffixOverrides=",">
+			<if test="name != null"> name = #{name},</if>
+			<if test="nickname != null"> nickname = #{nickname},</if>
+			<if test="birth != null"> birth = #{birth},</if>
+			<if test="gender != null"> gender = #{gender},</if>
+			<if test="preference != null"> preference = #{preference},</if>
+			<if test="bankNo != null"> bankNo = #{bankNo},</if>
+			<if test="carModel != null"> carModel = #{carModel}</if>
+		</trim>
+		where id = #{id}
+	</update>
+	
+	<!-- 회원 사진 수정(프로필/면허) -->
+	<update id="updateMemberImage" parameterType="hashMap">
+		update users set ${type} = #{img} where nickname=#{nickname}
+	</update>
+
+	
+	<!--  운전자 예약 현황 리스트 -->
+	<select id="driverReservationList" parameterType="Hashmap" resultType="reservationsDTO">
+		<![CDATA[
+		select * from reservations where driver = #{id} and acceptance = '0' order by reg DESC
+		]]>	
+	</select>
+	
+	<!-- 운전자 예정된 카풀 목록 가져오기 -->
+	<select id="driverUpComeList" parameterType="Hashmap" resultType="CarpoolDTO">
+		<![CDATA[
+			select B.*, r from 
+				(select A.*, rownum r from 
+					(select * from carpoollist 
+					where time >= to_char(sysdate,'yyyy-mm-dd') 
+					and driverId = #{id} order by datetime ASC) A 
+					order by datetime ASC) B 
+					where r >= #{start} and r <= #{end}
+		]]>
+	</select>
+	
+	<!-- 운전자 지난 여정 -->
+	<select id="driverPastList" parameterType="String" resultType="CarpoolDTO">
+		<![CDATA[
+			select c.* from reservations r JOIN carpoolList c ON c.carpoolNum = r.carpoolNum 
+			WHERE c.driverid = #{id} AND r.driver = #{id} AND c.time < TO_CHAR(SYSDATE,'YY-MM-DD HH:mm')
+			ORDER BY r.reg DESC
+		]]>
+	</select>
+		<!-- 탑승객 예약현황 -->
+	<select id="passengerReservationList" parameterType="String" resultType="reservationsDTO">
+		<![CDATA[
+			select * from reservations WHERE passenger = #{id} AND (acceptance = '0' OR acceptance = '2') order by reg DESC
+		]]>	
+	</select>
+	
+	<select id="myCarpoolList" parameterType="int" resultType="CarpoolDTO">
+		<![CDATA[
+			select * from carpoolList where carpoolNum = #{carpoolNum} AND time >= TO_CHAR(SYSDATE,'YYYY-MM-DD HH:mm') ORDER BY time DESC
+		]]>	
+	</select>
+	
+	<!-- 탑승객예정카풀 -->
+	<select id="passengerUpcomeList" parameterType="String" resultType="ReservationsDTO">
+		<![CDATA[
+			select r.* from reservations r JOIN carpoolList c ON r.carpoolNum = c.carpoolNum 
+			where passenger = #{id} 
+			AND r.acceptance = '1'
+			AND time >= TO_CHAR(SYSDATE,'YYYY-MM-DD HH:mm') ORDER BY time DESC
+		]]>	
+	</select>
+
+	<!--  탑승객 지난 카풀 -->	
+	<select id="passengerPastList" parameterType="String" resultType="ReservationsDTO">
+		<![CDATA[
+			select r.* from reservations r JOIN carpoolList c ON r.carpoolNum = c.carpoolNum 
+			where passenger = #{id} 
+			AND r.acceptance = '1'
+			AND time < TO_CHAR(SYSDATE,'YYYY-MM-DD HH:mm') ORDER BY time DESC
+		]]>	
+	</select>
+	
+	<select id="myCarpoolList2" parameterType="int" resultType="CarpoolDTO">
+		<![CDATA[
+			select * from carpoolList where carpoolNum = #{carpoolNum} ORDER BY time DESC
+		]]>	
+	</select>
+	
+	<!-- 회원 탈퇴 -->
+	<delete id="deleteMember" parameterType="string">
+		delete from users where nickname=#{nickname}
+	</delete>
+
+	<!-- 닉네임 중복 확인 -->
+	<select id="checkNickname" parameterType="string" resultType="int">
+		select count(*) from users where nickname=#{nickname}
+	</select>
+	
+	<!-- 회원 아이디로 닉네임 가져오기 -->
+	<select id="getNickname" parameterType="string" resultType="string">
+		select nickname from users where id=#{id}
+	</select>
+	
+	<select id="getRoomNum" parameterType="Map" resultType="int">
+		SELECT roomNum FROM alertRoom 
+		WHERE (user1=#{id} and user2=#{driver}) 
+		AND (user1 = #{driver} OR user2 = #{id}) 
+		AND carpoolnum = #{carpoolNum}
+	</select>
+	
+	<insert id="reviewInsert" parameterType="ReviewDTO">
+		insert into reviews values(#{carpoolNum}, #{type}, #{writer}, #{id}, #{rate}, #{content}, sysdate)
+	</insert>
+	
+	<select id="reviewCheck" parameterType="HashMap" resultType="int">
+		select count(*) from reviews where (carpoolnum = #{num} and writer = #{id}) and type = #{type}
+	</select>
+	
+	<select id="driverPastCarpool" parameterType="HashMap" resultType="CarpoolDTO">
+	<![CDATA[
+		select * from 
+			(select A.*, rownum r from 
+				(select c.* from carpoollist c, reservations r where (c.carpoolnum = r.carpoolnum and c.driverid = #{id}) and (r.acceptance = 1 and c.time < to_char(sysdate)) order by c.time desc)A)
+		where r >= #{start} and r <= #{end}
+	]]>	
+	</select>
+	
+	<select id="driverPastReservation" parameterType="HashMap" resultType="reservationsDTO">
+	<![CDATA[
+		select * from 
+			(select A.*, rownum r from 
+				(select r.* from carpoollist c, reservations r where (c.carpoolnum = r.carpoolnum and c.driverid = #{id}) and (r.acceptance = 1 and c.time < to_char(sysdate)) order by c.time desc)A)
+		where r >= #{start} and r <= #{end}
+	]]>	
+	</select>
+	
+	<select id="getDriverPastCount" resultType="int" parameterType="String">
+	<![CDATA[
+		select count(*) from 
+			(select r.* from carpoollist c, reservations r 
+				where (c.carpoolnum = r.carpoolnum and c.driverid = #{id}) and (r.acceptance = 1 and c.time < to_char(sysdate)))
+	]]>
+	</select>
+
+	<select id="sumRate" parameterType="HashMap" resultType="int">
+		select sum(rate) from reviews where id = #{id} and type = #{type}
+	</select>
+
+	<select id="getReviewCount" parameterType="HashMap" resultType="int">
+		select count(*) from reviews where id = #{id} and type = #{type}
+	</select>
+
+	<select id="checkAdmin" parameterType="string" resultType="int">
+		select subadmin from users where nickname = #{nickname}
+	</select>
+
+	
+	<!-- main.jsp 추천경로 -->
+	<select id="getRecommend" resultType="recommendDTO">
+		select b.* from (select a."DEPART", a."DESTINATION", count(a."DEPART") as "COUNT", avg(price) as "PRICE" from (select substr(depart, 1, instr(depart,'구')) as "DEPART", substr(destination, 1,instr(destination, '구')) as "DESTINATION", price
+		from carpoollist) a GROUP by a."DEPART", a."DESTINATION") b where not b."DEPART" is null and not b."DESTINATION" is null order by b."COUNT" desc
+	</select>
+
+
+
+</mapper>

@@ -1,0 +1,340 @@
+/* 공통 */
+.modal {
+	margin: 0 !important;
+}
+.btn-close {
+  position: absolute;
+  top:1rem;
+  right:1rem;
+}
+ul,li {
+  list-style: none;
+  padding:0;
+  margin:0;
+}
+p.bold {
+  font-weight: bold;
+  margin:0;
+  font-size: 0.95rem;
+}
+.modal-header {
+  padding: 1.5rem;
+  align-items: baseline;
+  display:block;
+}
+.modal-footer {
+  width: 100%;
+  padding:0;
+  margin:0;
+  flex-wrap: inherit;
+}
+.modal-footer .btn {
+  width: 50%;
+  height:70px;
+  padding:0;
+  margin:0;
+  background-color: white;
+  border:0;
+  font-size:.9rem;
+  font-weight: bold;
+}
+.modal-footer .btn-secondary{
+  color: rgb(190, 190, 190);
+}
+.modal-footer .btn-primary {
+  color:rgb(74, 190, 202);
+}
+
+/* 프로필 팝업 */
+#userProfilePopup .user-profile {
+  text-align:center;
+  position: relative;
+}
+
+#userProfilePopup .user-name {
+  font-size: 24px;
+  font-weight: 900;
+  position:relative;
+}
+#userProfilePopup .user-name p, .user-etc p {
+  margin:0;
+  padding:0;
+}
+#userProfilePopup .user-etc {
+  font-size: 15px;
+  font-weight: 500;
+}
+#userProfilePopup .user-profile .small{
+  font-size:8px;
+  height: 13px;
+  font-weight: 100;
+}
+
+#userProfilePopup .user-profile .small img {
+  margin: 0 3px;
+  width: 15px;
+  height: 15px;
+}
+#userProfilePopup .icon {
+  position: absolute;
+  bottom:0;
+  width:100%;
+  height:30px;
+}
+#userProfilePopup .reportcount {
+  position: absolute;
+  right:0;
+  bottom:0;
+}
+#userProfilePopup .auth {
+  position: absolute;
+  left:0;
+  bottom:0;
+  text-align: left;
+}
+#userProfilePopup .auth .small {
+  padding: 10px 0;
+}
+#userProfilePopup ul.con1 {
+  width:100%;
+  padding:1rem 0;
+  display:inline-flex;
+  text-align: center;
+  position:relative;
+}
+#userProfilePopup ul.con1 li {
+  position: relative;
+  width: 33.333%;
+}
+#userProfilePopup ul.con1 li .txt {
+  font-size: 0.8rem;
+  margin-top:5px;
+  color: gray;
+}
+#userProfilePopup ul.con1 li .txt span {
+  font-size:0.5rem;
+  color:lightgray;
+  position: absolute;
+  bottom:-5px;
+  left:50%;
+  transform: translate(-50%, -50%);
+}
+
+#userProfilePopup ul.con1 li .star {
+  margin-top:3px;
+  color: orange;
+}
+
+#userProfilePopup ul.con1 div.line {
+  width: 1px;
+  height: 60px;
+  background-color: gray;
+  position: absolute;
+}
+#userProfilePopup ul.con1 .line:nth-child(2) {
+  left: 33.333%;
+}
+#userProfilePopup ul.con1 .line:nth-child(4) {
+  right:33.333%;
+}
+
+#userProfilePopup .preference p {
+  padding: 1rem 2rem;
+}
+#userProfilePopup .review {
+  padding: 1rem;
+}
+#userProfilePopup .review ul li {
+  display:inline-flex;
+}
+#userProfilePopup .review .re-img img {
+  width: 35px;
+  height: 35px;
+}
+#userProfilePopup .review ul li p {
+  padding-left:2rem;
+  font-size:0.7rem;
+}
+#userProfilePopup .user-type {
+	margin:auto;
+}
+
+
+/* 후기 팝업 */
+#half-stars-example {
+  /* 별표 */
+  /* 공백 문제를 방지하기 위해 display:inline-flex를 사용합니다. 또는 .rating-group의 모든 자식을 한 줄에 넣을 수 있습니다. 
+   IE에서 호버 효과가 제대로 작동하도록 합니다. 
+   라디오 입력 숨기기 
+   아이콘 패딩과 크기 설정 
+   별표 레이블에 패딩 및 위치 지정 추가 
+   기본 별색 설정 
+   체크하지 않았을 때 아이콘의 색상을 설정하지 않음 
+   체크된 아이콘이 없으면 빨간색으로 표시 
+   입력이 확인되면 다음 형제를 회색으로 만듭니다. 
+   등급 그룹 호버에서 모든 별을 주황색으로 표시 
+   호버링 시 호버링된 입력의 다음 형제를 회색으로 만듭니다. 
+   등급 그룹 호버에서 아이콘을 회색으로 표시하지 않음 
+   마우스를 가져가면 아무 아이콘도 빨간색으로 표시하지 않음 */
+}
+#half-stars-example .rating-group {
+  display: inline-flex;
+}
+#half-stars-example .rating__icon {
+  pointer-events: none;
+}
+#half-stars-example .rating__input {
+  position: absolute !important;
+  left: -9999px !important;
+}
+#half-stars-example .rating__label {
+  cursor: pointer;
+  /* if you change the left/right padding, update the margin-right property of .rating__label--half as well. */
+  padding: 0 0.1em;
+  font-size: 2rem;
+}
+#half-stars-example .rating__label--half {
+  padding-right: 0;
+  margin-right: -0.6em;
+  z-index: 2;
+}
+#half-stars-example .rating__icon--star {
+  color: orange;
+}
+#half-stars-example .rating__icon--none {
+  color: #eee;
+}
+#half-stars-example .rating__input--none:checked + .rating__label .rating__icon--none {
+  color: red;
+}
+#half-stars-example .rating__input:checked ~ .rating__label .rating__icon--star {
+  color: #ddd;
+}
+#half-stars-example .rating-group:hover .rating__label .rating__icon--star,
+#half-stars-example .rating-group:hover .rating__label--half .rating__icon--star {
+  color: orange;
+}
+#half-stars-example .rating__input:hover ~ .rating__label .rating__icon--star,
+#half-stars-example .rating__input:hover ~ .rating__label--half .rating__icon--star {
+  color: #ddd;
+}
+#half-stars-example .rating-group:hover .rating__input--none:not(:hover) + .rating__label .rating__icon--none {
+  color: #eee;
+}
+#half-stars-example .rating__input--none:hover + .rating__label .rating__icon--none {
+  color: red;
+}
+#reviewPopup p {
+  padding:0;
+  margin:0;
+  font-size:0.8rem;
+  color: gray;
+}
+#reviewPopup div.con {
+  padding: 0.5rem 1rem;
+}
+#reviewPopup div.con textarea {
+  margin-top:10px;
+  width: 100%;
+  height: 150px;
+  font-size:.8rem;
+  padding:1rem;
+  resize:none;
+  color: gray;
+  border-radius: 10px;
+}
+
+#reviewPopup div.con textarea:focus-visible {
+  border:1px solid gray;
+  outline: 0;
+  box-shadow: lightslategrey;
+}
+
+#reviewPopup .rating-group .rate {
+	
+	
+}
+#reviewPopup .star-group img {
+	width:25px;
+	cursor:pointer;
+}
+
+/* 신고하기 팝업 */
+#reportPopup .modal-title{
+  font-size:1.2rem;
+  font-weight: 900;
+  color: gray;
+  margin: 0;
+}
+#reportPopup .report-user{
+  padding: 1.5rem;
+}
+#reportPopup .con-title {
+  margin: 0;
+  font-size: 0.8rem;
+  color: gray;
+}
+#reportPopup .userid {
+  font-size: 0.8rem;
+  margin: 1rem 0 2rem 1rem;
+}
+#reportPopup .txt {
+  margin-top:1rem;
+  width: 100%;
+  height: 200px;
+  padding:1rem;
+  font-size:.8rem;
+  resize:none;
+  color: gray;
+  border-radius: 10px;
+}
+#reportPopup textarea.txt:focus-visible {
+  border:1px solid gray;
+  outline: 0;
+  box-shadow: lightslategrey;
+}
+#reportPopup .noti {
+  font-size: 0.7rem;
+  color:rgb(239, 162, 154);
+  padding-bottom:1rem;
+}
+
+
+
+/* 예약정보확인 팝업 */
+#requestInfoPopupLabel, #reserveInfoPopupLabel {
+  font-weight: 900;
+  padding-bottom: 20px;
+}
+#requestInfoPopup .count p, #reserveInfoPopup  .count p {
+  font-size:.8rem;
+  margin:0;
+  padding-left:1rem;
+  color:rgb(190, 190, 190);
+}
+#requestInfoPopup .count p span, #reserveInfoPopup .count p span {
+  color: rgb(74, 190, 202);
+}
+#requestInfoPopup .reserve-info, #reserveInfoPopup .reserve-info {
+  padding:1rem;
+}
+#requestInfoPopup .carpool-info, #reserveInfoPopup .carpool-info{
+  font-size:1rem;
+  color:rgb(41, 128, 185);
+}
+#requestInfoPopup .time, #reserveInfoPopup .time{
+  font-size:.8rem;
+}
+#requestInfoPopup p, #reserveInfoPopup p {
+  padding:0;
+  margin:0;
+}
+#requestInfoPopup .passenger, #reserveInfoPopup .passenger{
+  padding-top:1.5rem;
+}
+#requestInfoPopup .passenger .message, #reserveInfoPopup .passenger .message {
+  padding:.8rem;
+  width:100%;
+  height:150px;
+  overflow-y: scroll;
+}

@@ -1,0 +1,59 @@
+
+.memberMenu a {
+	color:black;
+	text-decoration:none;
+}
+
+.memberMenu a:hover {
+	color:#999;
+	text-decoration:none;
+}
+.menuDiv {
+	padding-top: 5%;
+	padding-bottom: 5%;
+	background-color: rgb(245, 245, 245);
+	border-radius:3px;
+	text-align:center;
+	margin-bottom:3px;
+}
+
+.clickMenu {
+	background-color: #ffffff;
+}
+
+.mypageContent {
+	/* margin:auto; */
+	display:flex;
+}
+
+.noList {
+	font-size:20px;
+	margin:auto;
+	margin-top:100px;
+	margin-left:100px;
+}
+
+@media screen and (min-width: 768px) {
+	.memberMenu {
+		font-size: 20px;
+		font-weight: 700;
+		width:auto;
+		width:250px;
+	}
+
+}
+	
+@media screen and (max-width: 768px) {
+	#sidebar {
+		float:inherit !important;
+		width:100% !important;
+	}
+	#mypage {
+		width:100% !important;
+	}
+	
+	
+	
+}
+
+

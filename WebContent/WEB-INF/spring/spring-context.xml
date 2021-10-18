@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.3.xsd"
+	>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="utf-9"/>
+		<property name="maxUploadSize" value="10485760"/>
+	</bean>
+	
+	<bean id="dataSourceSpied" class="org.apache.commons.dbcp.BasicDataSource" 
+		destroy-method="close"
+	    p:driverClassName="oracle.jdbc.driver.OracleDriver"
+	    p:url="jdbc:oracle:thin:@nullmaster.iptime.org:1521:ORCL"
+	    p:username="final01"
+	    p:password="final01"
+	/>
+	
+	<bean id="dataSource" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="dataSourceSpied" />
+		<property name="logFormatter">
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE" />
+				<property name="sqlPrefix" value="SQL : " />			
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean" >
+		<property name="dataSource" ref="dataSource" />
+		<property name="configLocation" value="/WEB-INF/mybatis/mybatis-config.xml"></property>
+	</bean>
+	
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="clearCache">
+		<constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+	</bean>
+	
+	<!-- MemberService 빈으로 등록 -->
+	<context:component-scan base-package="wiicar.member.dao"/>
+	<context:component-scan base-package="wiicar.member.service"/>
+	
+	<context:component-scan base-package="wiicar.carpool.service"/>
+	<context:component-scan base-package="wiicar.carpool.dao"/>
+	
+	<context:component-scan base-package="wiicar.views.controller"/>
+	
+	<context:component-scan base-package="wiicar.chat.service"/>
+	<context:component-scan base-package="wiicar.chat.dao"/>
+	
+	<context:component-scan base-package="wiicar.admin.service"/>
+	<context:component-scan base-package="wiicar.admin.dao"/>
+	
+	<context:component-scan base-package="wiicar.alerts.service"/>
+	<context:component-scan base-package="wiicar.alerts.dao"/>
+	
+	<context:component-scan base-package="wiicar.qnaboard.service"/>
+	<context:component-scan base-package="wiicar.qnaboard.dao"/>
+	
+	<context:component-scan base-package="wiicar.home.service"/>
+	<context:component-scan base-package="wiicar.home.dao"/>
+	
+</beans>	

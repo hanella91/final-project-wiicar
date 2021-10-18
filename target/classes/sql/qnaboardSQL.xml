@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qnaboard">
+
+
+	<!-- qna 리스트 가져오기 ********* rownum 빼고-->
+	<select id="getQnaList" parameterType="hashmap" resultType="qnaboardDTO">
+		<![CDATA[
+		select num, writer, reply_writer, title, content, reply_content, status, reg, qnacate, closed, hit, reply_date from 
+			(select rownum r, a.* from (select * from qnaboard where qnacate like '%${filter}%' and title like '%${search}%'
+		]]> 
+			<if test="sid != null"> and writer = #{sid}</if>
+		<![CDATA[
+			order by reg desc) a) b 
+		where r >= #{startRow} and r <= #{endRow}
+		]]>
+	</select>
+	
+	<!-- qna 리스트 카운트 -->
+	<select id="cntQnaList" parameterType="hashmap" resultType="int">
+		select count(*) from qnaboard where qnacate like '%'||#{filter}||'%' and title like '%'||#{search}||'%'
+		<if test="sid != null"> and writer = #{sid}</if>
+	</select>
+	
+	<!-- 조회수 추가 -->
+	<update id="qnaAddHit" parameterType="int">
+		update qnaboard set hit=hit+1 where num=#{qnaNum}
+	</update>
+	
+	<!-- qna Content 불러오기 -->
+	<select id="getQnaContent" parameterType="int" resultType="qnaboardDTO">
+		select * from qnaboard where num=#{qnaNum}
+	</select>
+	
+	<!-- qna 저장하기 -->
+	<insert id="insertQna" parameterType="qnaboardDTO">
+		insert into qnaboard (num, writer, title, content, qnaCate, closed) values (qnaboard_seq.nextVal, #{writer}, #{title}, #{content}, #{qnaCate}, #{closed})
+	</insert>
+	
+	<!-- qna 삭제하기 -->
+	<delete id="deleteQna" parameterType="hashmap">
+		delete from (select a.*, b.pw from qnaboard a left join users b on a.writer = b.nickname) where num=#{num} and pw=#{pw}
+	</delete>
+	
+	<!-- qna 수정하기 -->
+	<update id="modifyQna" parameterType="qnaboardDTO">
+		update qnaboard set title=#{title}, content=#{content} where num=#{num}
+	</update>
+</mapper>  

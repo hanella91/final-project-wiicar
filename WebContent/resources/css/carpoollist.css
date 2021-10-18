@@ -1,0 +1,170 @@
+#searchFormSubmit {
+	border:none;
+	border-radius:5px;
+	height:30px;
+	color:white;
+	background-color:#3498DB;
+}
+
+#filters #sorting{
+	display:flex;
+}
+#filters #sorting input[type=radio] {
+	margin-right:10px;
+}
+#filters #sorting div{
+	width:25%;
+	text-align:center;
+}
+
+#filters #timeRange input[type=checkbox] {
+	margin-right:10px;
+} 
+#filters #timeRange div{
+	margin-left:10px;
+}
+#filters #carModel {
+	display:flex;
+}
+#filters #carModel div {
+	margin-left:10px;
+}
+#filters #carModel input[type=checkbox] {
+	margin-right:5px;
+}
+#filters #ageGroup {
+	display:flex;
+}
+#filters #ageGroup div {
+	margin-left:10px;
+}
+#filters #ageGroup input[type=checkbox] {
+	margin-right:5px;
+}
+#filters #gender {
+	display:flex;
+}
+#filters #gender div{
+	margin-left:10px;
+}
+#filters #gender input[type=checkbox] {
+	margin-right:5px;
+}
+#filters #maxPassanger {
+	display:flex;
+}
+#filters #maxPassanger div{
+	margin-left:10px;
+}
+#filters #maxPassanger input[type=checkbox] {
+	margin-right:5px;
+}
+#filters #filterFormSubmit {
+	border:none;
+	border-radius:5px;
+	height:30px;
+	width:100%;
+	color:white;
+	margin:auto;
+	background-color:#3498DB;
+}
+@media screen and (min-width: 768px) {
+	#bar {
+		display:flex;
+		margin: auto;
+    	width: fit-content;
+    	margin-bottom:15px;
+	}
+	#search-bar input[type=text] {
+		height:30px;
+		width:150px;
+		margin-right:5px;
+	}
+	#search-bar .flatpickr-mobile{
+		height:30px;
+		width:150px;
+		margin-right:5px;
+	}
+	#search-bar input[type=submit] {
+		width:100px;
+	}
+	
+	
+	
+	#search-bar .modal-content {
+		width: 500px;
+	}
+	
+	
+	.carpoolContent {
+		width: 600px;
+	}
+	
+	.carpoolUsers {
+		display:flex;
+		margin:auto;
+		margin-top:20px;
+	}
+	
+	.carpoolPassengers {
+		width:50%;
+		margin:auto;
+	}
+	.carpoolDriver {
+		width:50%;
+	}
+	
+}
+
+@media screen and (max-width: 768px) {
+	#bar {
+		display:block;
+		margin: auto;
+    	width: 50%;
+    	margin-bottom:15px;
+	}
+	#search-bar input[type=text] {
+		height:30px;
+		width:100%;
+		margin: auto;
+		margin-bottom:5px;
+	}
+	#search-bar .flatpickr-mobile{
+		height:30px;
+		width:100%;
+		margin: auto;
+		margin-bottom:5px;
+	}
+	#search-bar input[type=submit] {
+		width:100%;
+		margin: auto;
+	}
+	
+	
+	#search-bar .modal-content {
+		width: 80%;
+	}
+	
+	.carpoolContent {
+		width: auto;
+	}
+		
+	.carpoolUsers {
+		display:block;
+	}
+	.carpoolPassengers {
+		width:80%;
+		margin:auto;
+		margin-top:10px;
+		text-align: left;
+	}
+	.carpoolPassengers div {
+		margin-left:20px;
+	}
+	.carpoolDriver {
+		width:80%;
+		margin:auto;
+		margin-top:10px;
+	}
+	
+}

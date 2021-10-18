@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="carpool">
+
+	<insert id="insertCarpool" parameterType="carpoolDTO">
+		insert into carpoolList values(carpoolList_seq.nextVal, #{driverId} , #{depart}, #{depart_lon}, #{depart_lat}, #{destination}, #{destination_lon}, #{destination_lat}, #{time}, #{maxPassenger}, 0 ,#{tags}, #{distance}, #{price}, 0 , sysdate, #{dateTime}, 0)
+	</insert> 
+	
+	<select id="getCarpool" parameterType="CarpoolDTO" resultType="CarpoolDTO">
+		select * from carpoollist where carpoolNum = #{carpoolNum}
+	</select>
+	
+	
+	
+	<select id="getCarpoolInfo" parameterType="int" resultType="CarpoolDTO">
+		select * from carpoollist where carpoolNum = #{carpoolNum}
+	</select>
+	
+	<select id="getCarpoolCount" resultType="int">
+		select count(*) from carpoollist where time >= to_char(sysdate,'yyyy-mm-dd') and maxpassenger > passengercount
+	</select>
+	
+	<select id="getCarpoolList" parameterType="Hashmap" resultType="CarpoolDTO">
+		<if test="sel == 'driverrate'">
+			<![CDATA[
+				select B.*, r from (select A.*, rownum r from (select C.*, U.driverrate rate from carpoollist C, users U where (C.driverid = U.nickname) and C.time >= to_char(sysdate,'yyyy-mm-dd') 
+				and c.maxpassenger > c.passengercount order by rate ${sort}) A order by A.rate ${sort}) B where r >= #{startRow} and r <= #{endRow}
+			]]>
+		</if>
+		<if test="sel != 'driverrate'">
+			<![CDATA[
+				select B.*, r from 
+					(select A.*, rownum r from 
+						(select * from carpoollist where time >= to_char(sysdate,'yyyy-mm-dd') and maxpassenger > passengercount order by ${sel} ${sort}) A 
+							order by ${sel} ${sort}) B 
+				where r >= #{start} and r <= #{end}
+			]]>
+		</if>
+		
+	</select>
+
+	<select id="getLike" parameterType="Hashmap" resultType="int">
+		select count(*) from likecarpool where carpoolNum = #{carpoolNum} and id = #{sid}
+	</select>
+
+	<insert id="insertLike" parameterType="Hashmap">
+		insert into likecarpool values(#{sid},#{carpoolNum})
+	</insert>
+	
+	<delete id="deleteLike" parameterType="Hashmap">
+		delete from likecarpool where id = #{sid} and carpoolnum = #{carpoolNum}
+	</delete>
+
+	<select id="getCarpoolRecord" parameterType="String" resultType="int">
+		<![CDATA[
+			select count(*) from carpoollist where driverid = #{id} and time < to_char(sysdate, 'YY-MM-DD HH24:MI:SS')
+		]]>
+	</select>
+
+	<select id="getCarpoolUsed" parameterType="String" resultType="int">
+		select count(*) from reservations where passenger = #{id} and acceptance = 1
+	</select>
+
+	<select id="getLikeCarpoolCount" parameterType="String" resultType="int">
+		select count(*) from likecarpool where id = #{id}
+	</select>
+
+	<select id="getLikeCarpoolList" parameterType="Hashmap" resultType="CarpoolDTO">
+		<if test="sel == 'driverrate'">
+			<![CDATA[
+				select B.*, r from 
+				    (select A.*, rownum r from 
+				        (select C2.*, U.driverrate rate from (select c.* from carpoollist c, likecarpool l where c.carpoolnum = l.carpoolnum and l.id = #{id}) C2, users U where C.driverid = U.id) A 
+				        order by A.rate ${sort}) B 
+				where r >= #{start} and r <= #{end}
+			]]>
+		</if>
+		<if test="sel != 'driverrate'">
+			<![CDATA[
+				select B.*, r from 
+					(select A.*, rownum r from 
+						(select c.* from carpoollist c, likecarpool l where c.carpoolnum = l.carpoolnum and l.id = #{id}) A 
+							order by ${sel} ${sort}) B 
+				where r >= #{start} and r <= #{end}
+			]]>
+		</if>
+	</select>
+
+	<select id="checkReservation" parameterType="HashMap" resultType="int">
+		select count(*) from reservations where carpoolnum = #{carpoolNum} and passenger = #{sid}
+	</select>
+
+</mapper>
+

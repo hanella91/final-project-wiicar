@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+
+	<!-- 한글 인코딩 처리(POST방식) --> 
+ 	<filter>
+ 		<filter-name>characterEncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+ 	</filter>
+ 	<filter-mapping>
+ 		<filter-name>characterEncodingFilter</filter-name>
+ 		<url-pattern>/*</url-pattern>
+ 	</filter-mapping>
+ 
+	<error-page>
+   		<location>/error.do</location>
+  	</error-page>
+	
+
+	<!-- 로그 설정 --> 
+	<!-- log4j 설정파일 위치 지정해주는 설정파라미터--> 
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>/WEB-INF/log/log4j.xml</param-value>
+	</context-param>	
+	<!-- 위에 지정해놓은 설정 파라미터를 기반으로 log4j 프레임워크 초기화 해주는 클래스를 리스너로 등록--> 
+ 	<listener>
+ 		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+ 	</listener>
+
+	<!-- 서블릿매핑 : 스프링 MVC가 웹요청을 처리하려면, DispatcherServlet을 통해서 웹요청을 받아야하며,
+	아래와 같이 반드시 작성해야한다.--> 
+ 	<servlet>
+ 		<servlet-name>spring</servlet-name>	
+ 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+ 		<init-param>
+ 			<param-name>contextConfigLocation</param-name>
+ 			<param-value>
+ 				/WEB-INF/spring/member-context.xml
+ 				/WEB-INF/spring/spring-context.xml
+ 				/WEB-INF/spring/carpool-context.xml
+ 				/WEB-INF/spring/aop-context.xml
+ 				/WEB-INF/spring/home-context.xml
+ 			</param-value>
+ 		</init-param>
+ 	</servlet>
+	<servlet-mapping>
+ 		<servlet-name>spring</servlet-name>
+ 		<url-pattern>*.do</url-pattern>
+ 	</servlet-mapping>
+
+
+</web-app>

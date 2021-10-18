@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.3.xsd	
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-4.3.xsd"
+	>	
+	
+	<context:component-scan base-package="wiicar.aop.advice" />
+	
+	<!-- AOP 어노테이션으로 작업할 Aspect 클래스 빈으로 등록 -->
+	<bean id="memberAspect" class="wiicar.aop.advice.MemberAspect" />
+	
+	<!-- 공통기능 구현해놓은 클래스 객체 생성(빈등록) -->
+	<bean id="advice" class="wiicar.aop.advice.Advice" /> 
+	
+	<!-- Aspect 어노테이션으로 설정된 빈 객체를 Aspect로 사용하도록 프록시 자동 생성 -->
+	<aop:aspectj-autoproxy />
+	
+	
+</beans>	

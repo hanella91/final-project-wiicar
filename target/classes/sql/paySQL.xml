@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pay">
+
+	<insert id="insertPay" parameterType="PayDTO">
+		insert into payment values(payment_seq.nextVal, #{id}, #{price}, #{type}, sysdate, #{expiredate}, #{paymentstate}, #{carpoolNum}, #{message})
+	</insert>
+
+	<select id="getPayment" parameterType="PayDTO" resultType="PayDTO">
+		<if test="type == null">
+			select * from payment where paynum = #{paynum}		
+		</if>
+		<if test="type == 0">
+			select * from payment where id = #{id} and paydate = sysdate		
+		</if>
+		<if test="type == 1" >
+			select * from payment where (id = #{id} and type = 1) and (paymentstate = 2 and paydate = sysdate)
+		</if>
+
+	</select>
+
+	<update id="successPay" parameterType="int">
+		<if test="type == 0">
+			update payment set paymentstate = 0 where paynum = #{paynum}
+		</if>
+		<if test="type == 1">
+			update payment set paydate = sysdate, paymentstate = 0 where paynum = #{paynum}
+		</if>
+	</update>
+
+	<update id="failPay" parameterType="int">
+		update payment set paymentstate = 3 where paynum = #{paynum}
+	</update>
+
+	<delete id="cancelPay" parameterType="int">
+		delete from payment where paynum = #{paynum}
+	</delete>
+
+	<select id="getMySubscription" parameterType="String" resultType="PayDTO">
+		<![CDATA[
+		select * from payment where (id = #{value} and paymentstate = 0) and (type = 1 and expiredate > sysdate)
+		]]>
+	</select>
+	
+	<select id="isSubscription" parameterType="String" resultType="int">
+		<![CDATA[
+		select count(*) from payment where (id = #{value} and paymentstate = 0) and (type = 1 and expiredate > sysdate)
+		]]>
+	</select>
+	
+	<update id="updatePay" parameterType="PayDTO">
+		<selectKey keyProperty="paydate" order="BEFORE" resultType="java.sql.Timestamp">
+			select expiredate from payment where id = #{id} and type = 1
+		</selectKey>
+		update payment set paydate = #{paydate}, expiredate = #{expiredate}, price = #{price}, paymentstate = 0 where paynum = #{paynum}
+	</update>
+	
+	<select id="getPayType" parameterType="int" resultType="int">
+		select type from payment where paynum = #{value}
+	</select>
+	
+	<update id="rollback" parameterType="PayDTO">
+		<selectKey keyProperty="expiredate" order="BEFORE" resultType="java.sql.Timestamp">
+			select paydate from payment where id = #{id} and type = 1
+		</selectKey>
+		update payment set paydate = sysdate, expiredate = #{expiredate}, paymentstate = 0 where type = 1 and id = #{id}
+	</update>
+	
+	<select id="getSubscription" parameterType="String" resultType="int">
+		select count(*) from payment where id = #{id} and (type = 1 and expiredate > sysdate)
+	</select> 
+
+</mapper>  

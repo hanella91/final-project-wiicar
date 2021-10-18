@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias type="wiicar.member.dto.MemberDTO" alias="memberDTO"/>
+		<typeAlias type="wiicar.carpool.dto.ReservationsDTO" alias="reservationsDTO"/>
+		<typeAlias type="wiicar.member.dto.MyCarpoolPassangerDTO" alias="myCarpoolPassangerDTO"/>
+		<typeAlias type="wiicar.carpool.dto.CarpoolDTO" alias="CarpoolDTO"/>
+		<typeAlias type="wiicar.carpool.dto.PayDTO" alias="PayDTO"/>
+		<typeAlias type="wiicar.chat.dto.ChatDTO" alias="chatDTO"/>
+		<typeAlias type="wiicar.chat.dto.RoomDTO" alias="roomDTO"/>
+		<typeAlias type="wiicar.carpool.dao.SearchDAO" alias="searchDAO"/>
+		<typeAlias type="wiicar.chat.dto.MatchingDTO" alias="matchDTO"/>
+		<typeAlias type="wiicar.admin.dto.CarLookDTO" alias="carlookDTO"/>
+		<typeAlias type="wiicar.review.dto.ReviewDTO" alias="ReviewDTO"/>
+		<typeAlias type="wiicar.carpool.dto.ReservationsDTO" alias="reservationsDTO"/>
+		<typeAlias type="wiicar.admin.dto.RefundDTO" alias="refundDTO"/>
+		<typeAlias type="wiicar.alerts.dto.AlertsDTO" alias="alertDTO"/>
+		<typeAlias type="wiicar.chat.dto.UserInfoDTO" alias="userInfoDTO"/>
+		<typeAlias type="wiicar.admin.dto.ReportDTO" alias="reportDTO"/> 
+		<typeAlias type="wiicar.admin.dto.InfoBoardDTO" alias="infoboardDTO"/>
+		<typeAlias type="wiicar.admin.dto.MemberInfoDTO" alias="memberInfoDTO"/>
+		<typeAlias type="wiicar.admin.dto.AdminQnaDTO" alias="adminQnaDTO"/>
+		<typeAlias type="wiicar.qnaboard.dto.QnaboardDTO" alias="qnaboardDTO"/>
+		<typeAlias type="wiicar.home.dto.RecommendDTO" alias="recommendDTO"/>
+
+	</typeAliases>
+
+	<mappers>
+		<mapper resource="/sql/memberSQL.xml" />
+		<mapper resource="/sql/carpoolSQL.xml"/>
+		<mapper resource="/sql/paySQL.xml"/>
+		<mapper resource="/sql/chatSQL.xml"/>
+		<mapper resource="/sql/adminSQL.xml"/>
+		<mapper resource="/sql/searchSQL.xml"/>
+		<mapper resource="/sql/reviewSQL.xml"/>
+		<mapper resource="/sql/reportSQL.xml"/>
+		<mapper resource="/sql/alertsSQL.xml"/>
+		<mapper resource="/sql/qnaboardSQL.xml"/>
+	</mappers>
+	
+</configuration>

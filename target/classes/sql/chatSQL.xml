@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="chat">
+
+<!-- 세션id가 있는 채팅방 이름 가져오기 -->
+<select id="RoomList" parameterType="string" resultType="chatDTO">
+	select a.*, b.carpoolnum from 
+   		(select * from alerts) a right join (select * from alertRoom where (user1=#{nickname} and deluser1=0) or (user2=#{nickname} and deluser2=0)) b
+  	 on b.roomnum = a.roomnum
+</select>
+
+<!-- chatId와 채팅내역 가져오기 -->
+<select id="chatList" parameterType="hashmap" resultType="chatDTO">
+   select * from alerts where roomnum=#{roomnum} order by reg asc
+</select>
+
+<!-- 채팅 입력 -->
+<insert id="insertChat" parameterType="hashmap">
+   insert into alerts values(alerts_seq.nextVal,#{roomnum},#{userId},#{chatId},#{message},0,sysdate)
+</insert>
+
+<!-- userId 채팅 읽음 여부 Check -->
+<update id="readCheck" parameterType="hashmap">
+   <!-- update alerts set mes_check=1 where roomnum=#{roomnum} and receiver=#{userId} -->
+   update alerts set mes_check=1 where roomnum=#{roomnum}
+</update>
+
+<!-- 삭제 USer 찾기 -->
+<select id="deletUser" parameterType="hashmap" resultType="roomDTO">
+	select * from alertRoom where roomnum=#{roomnum}
+</select>
+
+<!-- 채팅방 나가기 삭제 -->
+<update id="chatRoomDelete1" parameterType="hashmap">
+	update alertRoom set deluser1=1 where roomnum=#{roomnum}
+</update>
+<update id="chatRoomDelete2" parameterType="hashmap">
+	update alertRoom set deluser2=1 where roomnum=#{roomnum}
+</update>
+
+<!-- alertRoom 삭제 -->
+<delete id="DeleteRoom" parameterType="hashmap">
+	delete from alertRoom where roomnum=#{roomnum}
+</delete>
+
+<!-- alerts 삭제 -->
+<delete id="DelChatList">
+	delete from alerts where roomnum=#{roomnum}
+</delete>
+
+<select id="checkType" parameterType="hashmap" resultType="String">
+	select driverid from carpoollist where carpoolnum = #{carpoolnum} and driverid = #{chatId}
+</select>
+<!-- chatId 정보 -->
+<select id="chatUser" parameterType="hashmap" resultType="userInfoDTO">
+	<if test="type == 'passenger'">
+		<![CDATA[
+			select u.profileimage, u.nickname, u.passengerrate, r.* from users u,
+			(select count(*) as fincount from reservations where (passenger=#{chatId} or driver=#{chatId} ) and acceptance=1 and reg < TO_DATE(sysdate)) r
+			where u.nickname = #{chatId}
+		]]>
+	</if>
+	<if test="type == 'driver'">
+		<![CDATA[
+			select u.profileimage, u.nickname, u.driverrate, r.* from users u,
+			(select count(*) as fincount from reservations where (passenger=#{chatId} or driver=#{chatId} ) and acceptance=1 and reg < TO_DATE(sysdate)) r
+			where u.nickname = #{chatId}
+		]]>
+	</if>
+
+</select>
+ 
+<!-- chatId 예약 정보 
+<select id="carpoolres" parameterType="hashmap" resultType="reservationsDTO">
+<![CDATA[
+	select count(*) from reservations where (passenger=#{chatId} or driver=#{chatId} ) and acceptance=1 and reg < TO_DATE(sysdate) 
+]]>
+</select> -->
+
+<!-- 카풀 정보 확인 -->
+<select id="getCarpool" parameterType="String" resultType="CarpoolDTO">
+	select * from carpoollist where carpoolnum=#{value}
+</select>
+
+<!-- 예약 요청 정보 가져오기 -->
+<select id="selectMatch" parameterType="hashmap" resultType="matchDTO">
+	select c.carpoolnum, c.driverid, c.depart, c.destination, c.time, c.maxpassenger, c.passengercount, c.tags, r.passenger, r.message from carpoollist c, reservations r 
+	where (c.driverid = #{driver} or c.driverid = #{passenger}) and r.passenger = #{passenger} and c.carpoolnum = r.carpoolnum and c.carpoolnum = #{carpoolnum}
+</select>
+
+<insert id="acceptChat" parameterType="hashmap">
+	<![CDATA[
+		insert into alerts values (alerts_seq.nextVal,#{roomnum}, #{driver}, #{passenger}, '
+			[알림] 회원님의 예약요청이 수락되었습니다.<br /> 예약 완료된 카풀 일정을 확인하세요!',0,sysdate)
+	]]>
+</insert>
+ 
+<update id="updateAcceptance" parameterType="int">
+	update reservations set acceptance = 1 where carpoolnum = #{carpoolnum}
+</update>
+ 	
+<update id="updateCarMatching" parameterType="int">
+	update carpoollist set carmatching = 1 where carpoolnum = #{carpoolnum2}
+</update>
+ 	
+<update id="updatePassengerCount" parameterType="int">
+	update carpoollist set passengercount = passengercount+1 where carpoolnum = #{carpoolnum2}
+</update>
+ 	
+<insert id="refuseChat" parameterType="hashmap">
+	<![CDATA[
+		insert into alerts values (alerts_seq.nextVal,#{roomnum}, #{driver}, #{passenger}, '[알림] 회원님의 예약요청이 거절되었습니다.', 0, sysdate)
+	]]>
+</insert>
+
+<update id="updateRefuse" parameterType="int">
+	update reservations set acceptance = 2 where carpoolnum = #{carpoolnum2}
+</update>
+
+<!-- 탑승자들 정보 가져오기 -->
+<select id="getPassengers" parameterType="int" resultType="String">
+	select passenger from reservations where carpoolnum = #{value} and acceptance = 1
+</select>
+
+<insert id="insertReservation" parameterType="ReservationsDTO">
+	insert into reservations values(#{carpoolnum}, #{passenger}, #{driver}, #{message}, 0, sysdate)
+</insert>
+
+<select id="isChatRoom" parameterType="Map" resultType="int">
+	select count(*) from alertroom where ((user1 = #{id} and user2 = #{driver}) or (user1 = #{driver} and user2 = #{id})) and (deluser1 = 0 and deluser2 = 0)
+</select>
+
+<insert id="newChatRoom" parameterType="RoomDTO">
+	insert into alertroom values(alertroom_seq.nextVal, #{user1}, #{user2}, #{carpoolnum},0,0)
+</insert>
+
+<select id="getRoomNum" parameterType="Map" resultType="int" >
+	select roomnum from alertroom where ((user1 = #{id} and user2 = #{driver}) or (user1 = #{driver} and user2 = #{id})) and (deluser1 = 0 and deluser2 = 0)
+</select>
+</mapper>  
